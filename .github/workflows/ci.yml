@@ -1,0 +1,91 @@
+---
+name: Continuous Integration
+
+on:
+  push:
+    branches: main
+  pull_request:
+
+concurrency:
+  group: ${{ github.ref }}-bundle
+  cancel-in-progress: true
+
+jobs:
+  rubocop:
+    name: Rubocop
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - uses: ruby/setup-ruby@v1
+        with:
+          ruby-version: ${{ inputs.ruby }}
+          bundler-cache: true
+
+      - name: Run rubocop
+        run: |
+          bundle exec rubocop
+
+  yamllint:
+    name: 'Yamllint'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Yamllint
+        uses: karancode/yamllint-github-action@dd59165b84d90d37fc919c3c7dd84c7e37cd6bfb
+        with:
+          yamllint_comment: true
+        env:
+          GITHUB_ACCESS_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+  test:
+    name: Run specs
+    strategy:
+      fail-fast: false
+      matrix:
+        ruby: ["2.7", "3.0", "3.1"]
+        postgres: ["9.6", "10", "11", "12", "13"]
+    runs-on: ubuntu-latest
+    container:
+      image: ruby:${{ matrix.ruby }}
+    services:
+      postgres:
+        image: postgres:${{ matrix.postgres }}
+        env:
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      toxiproxy:
+        image: ghcr.io/shopify/toxiproxy:2.5.0
+    env:
+      CI: "1"
+      PGHOST: "postgres"
+      PGUSER: "postgres"
+      PGPASSWORD: "password"
+      TOXIPROXY_HOST: "toxiproxy"
+      ImageOS: "ubuntu20"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-ruby-${{ matrix.ruby }}-gems-${{ hashFiles( format('{0}.lock', env.BUNDLE_GEMFILE) ) }}
+          restore-keys: |
+            ${{ runner.os }}-ruby-${{ matrix.ruby }}-gems-
+
+      - name: Bundle
+        run: |
+          bundle config path vendor/bundle
+          bundle install
+
+      - name: Run tests
+        run: |
+          bundle exec rspec

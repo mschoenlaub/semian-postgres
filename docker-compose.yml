@@ -1,0 +1,31 @@
+---
+version: "3.7"
+services:
+  dev:
+    environment:
+      DEBUG: "1"
+      PGHOST: "postgres"
+      PGUSER: "postgres"
+      PGPASSWORD: "password"
+      TOXIPROXY_HOST: "toxiproxy"
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    container_name: semian-dev
+    volumes:
+      - .:/app
+    command:
+      - /bin/bash
+      - -c
+      - |
+        bundle install
+        sleep infinity
+  toxiproxy:
+    image: ghcr.io/shopify/toxiproxy:2.5.0
+    container_name: toxiproxy
+    depends_on:
+      - postgres
+  postgres:
+    image: postgres
+    environment:
+      POSTGRES_PASSWORD: password

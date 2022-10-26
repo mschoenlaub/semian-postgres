@@ -1,0 +1,26 @@
+---
+require:
+  - rubocop-rspec
+  - rubocop-rake
+
+AllCops:
+  NewCops: enable
+  TargetRubyVersion: 2.7
+
+Metrics/MethodLength:
+  Enabled: 50
+
+RSpec/MultipleExpectations:
+  Enabled: false
+
+RSpec/ExampleLength:
+  Enabled: 25
+
+RSpec/MultipleMemoizedHelpers:
+  Enabled: 10
+
+Layout/LineLength:
+  Enabled: 160
+
+RSpec/Capybara/FeatureMethods:
+  Enabled: false

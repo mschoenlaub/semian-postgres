@@ -1,0 +1,6 @@
+*
+!lib
+!.rubocop.yml
+!Gemfile*
+!Rakefile
+!semian-postgres.gemspec
