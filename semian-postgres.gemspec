@@ -5,7 +5,7 @@ require_relative 'lib/semian/pg/version'
 Gem::Specification.new do |spec|
   spec.name = 'semian-postgres'
   spec.version = Semian::PG::VERSION
-  spec.homepage = 'https://github.com/mschoenlaub/semian-pg'
+  spec.homepage = 'https://github.com/mschoenlaub/semian-postgres'
   spec.authors = ['Manuel Schönlaub']
   spec.email = ['manuel.schonlaub@prodigygame.com']
 
