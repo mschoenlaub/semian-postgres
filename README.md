@@ -1,5 +1,8 @@
 # semian-postgres
 
+![CI Workflow](https://github.com/mschoenlaub/semian-postgres/actions/workflows/ci.yml/badge.svg)
+[![Gem Version](https://badge.fury.io/rb/semian-postgres.svg)](https://badge.fury.io/rb/semian-postgres)
+
 This library provides a Postgres adapter for [Semian](https://github.com/Shopify/semian) by wrapping the [pg gem](https://rubygems.org/gems/pg)
 Semian is a resiliency toolkit for Ruby applications that provides a way to protect your application from external failures by limiting the number of resources that can be used at a time.
 You can read more about Semian [here](https://github.com/Shopify/semian)).
