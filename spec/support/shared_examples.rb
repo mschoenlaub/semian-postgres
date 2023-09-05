@@ -44,32 +44,32 @@ RSpec.shared_examples 'a resource' do |aquire_proc, resource_scope, query_method
   context 'when an error occurs' do
     it 'opens the circuit' do
       proxy.downstream(:latency, latency: 2200).apply do
-        expect { method(aquire_proc).call }.to raise_error(::PG::Error)
-        expect { method(aquire_proc).call }.to raise_error(::PG::CircuitOpenError)
+        expect { method(aquire_proc).call }.to raise_error(PG::Error)
+        expect { method(aquire_proc).call }.to raise_error(PG::CircuitOpenError)
       end
     end
 
     it 'raises a ResourceBusy error on connect timeout' do
       proxy.downstream(:latency, latency: 5000).apply do
         background { method(aquire_proc).call }
-        expect { method(aquire_proc).call }.to raise_error(::PG::ResourceBusyError)
+        expect { method(aquire_proc).call }.to raise_error(PG::ResourceBusyError)
       end
     end
 
     it 'opens the circuit after timeout on connect' do
       proxy.downstream(:latency, latency: 2000).apply do
         background { method(aquire_proc).call }
-        expect { method(aquire_proc).call }.to raise_error(::PG::ResourceBusyError)
+        expect { method(aquire_proc).call }.to raise_error(PG::ResourceBusyError)
       end
       yield_to_background
-      expect { method(aquire_proc).call }.to raise_error(::PG::CircuitOpenError)
+      expect { method(aquire_proc).call }.to raise_error(PG::CircuitOpenError)
     end
   end
 
   it 'acquires a resource' do
     method(aquire_proc).call
     Semian['pg_testing'].acquire do
-      expect { method(aquire_proc).call }.to raise_error(::PG::ResourceBusyError) { |e|
+      expect { method(aquire_proc).call }.to raise_error(PG::ResourceBusyError) { |e|
         expect(e.semian_identifier).to eq('pg_testing')
       }
     end

@@ -19,16 +19,16 @@ RSpec.describe PG do
         conn = connect_to_pg!
         proxy.downstream(:latency, latency: 2200).apply do
           2.times do
-            expect { conn.reset }.to raise_error(::PG::Error)
+            expect { conn.reset }.to raise_error(PG::Error)
           end
         end
 
-        expect { conn.reset }.to raise_error(::PG::CircuitOpenError)
+        expect { conn.reset }.to raise_error(PG::CircuitOpenError)
 
         Timecop.travel(5 + 1) do
           # The circuit is half open, so the timeout is 1 second
           proxy.downstream(:latency, latency: 1500).apply do
-            expect { conn.reset }.to raise_error(::PG::Error)
+            expect { conn.reset }.to raise_error(PG::Error)
           end
         end
 
@@ -77,14 +77,14 @@ RSpec.describe PG do
 
       it 'does not open the circuit on SyntaxError' do
         2.times do
-          expect { conn.public_send(f, *query_with_syntax_error) }.to raise_error(::PG::SyntaxError)
+          expect { conn.public_send(f, *query_with_syntax_error) }.to raise_error(PG::SyntaxError)
         end
       end
 
       it 'does open the circuit on statement timeout' do
         conn.public_send(f, *statement_timeout_query)
-        expect { conn.public_send(f, *long_query) }.to raise_error(::PG::QueryCanceled)
-        expect { conn.public_send(f, *query) }.to raise_error(::PG::CircuitOpenError)
+        expect { conn.public_send(f, *long_query) }.to raise_error(PG::QueryCanceled)
+        expect { conn.public_send(f, *query) }.to raise_error(PG::CircuitOpenError)
         Timecop.travel(5 + 1) do
           expect(conn.public_send(f, *query).column_values(0).first).to eq('1')
         end
@@ -92,14 +92,14 @@ RSpec.describe PG do
 
       it 'does tag network errors' do
         proxy.down do
-          expect { conn.public_send(f, *query) }.to raise_error(::PG::ConnectionBad) { |e|
+          expect { conn.public_send(f, *query) }.to raise_error(PG::ConnectionBad) { |e|
             expect(e.semian_identifier).to eq(conn.semian_identifier)
           }
         end
       end
 
       it 'does not tag syntax errors' do
-        expect { conn.public_send(f, *query_with_syntax_error) }.to raise_error(::PG::SyntaxError) { |e| expect(e.semian_identifier).to be_nil }
+        expect { conn.public_send(f, *query_with_syntax_error) }.to raise_error(PG::SyntaxError) { |e| expect(e.semian_identifier).to be_nil }
       end
 
       context 'when there are two connections' do
@@ -109,25 +109,25 @@ RSpec.describe PG do
           proxy.downstream(:latency, latency: 2200).apply do
             background { conn.public_send(f, *query) }
 
-            expect { conn2.public_send(f, *query) }.to raise_error(::PG::ResourceBusyError)
+            expect { conn2.public_send(f, *query) }.to raise_error(PG::ResourceBusyError)
           end
         end
 
         it 'opens the circuit after resource timeout' do
           proxy.downstream(:latency, latency: 2200).apply do
             background { conn2.public_send(f, *query) }
-            expect { conn.public_send(f, *query) }.to raise_error(::PG::ResourceBusyError)
+            expect { conn.public_send(f, *query) }.to raise_error(PG::ResourceBusyError)
           end
 
           yield_to_background
-          expect { conn.public_send(f, *query) }.to raise_error(::PG::CircuitOpenError)
+          expect { conn.public_send(f, *query) }.to raise_error(PG::CircuitOpenError)
         end
       end
     end
 
     it 'acquires a resource when querying' do
       Semian['pg_testing'].acquire do
-        expect { conn.public_send(f, *query) }.to raise_error(::PG::ResourceBusyError) { |e|
+        expect { conn.public_send(f, *query) }.to raise_error(PG::ResourceBusyError) { |e|
           expect(e.semian_identifier).to eq('pg_testing')
         }
       end
