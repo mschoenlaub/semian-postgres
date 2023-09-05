@@ -144,5 +144,5 @@ module Semian
   end
 end
 
-::PG::Connection.prepend(Semian::PG)
-::PG::Connection.singleton_class.prepend(Semian::PG::ClassMethods)
+PG::Connection.prepend(Semian::PG)
+PG::Connection.singleton_class.prepend(Semian::PG::ClassMethods)
