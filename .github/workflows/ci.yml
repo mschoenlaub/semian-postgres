@@ -3,7 +3,8 @@ name: Continuous Integration
 
 on:
   push:
-    branches: main
+    branches:
+      - main
   pull_request:
 
 concurrency:
@@ -45,8 +46,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        ruby: ["2.7", "3.0", "3.1"]
-        postgres: ["9.6", "10", "11", "12", "13"]
+        ruby: [ "2.7", "3.0", "3.1" ]
+        postgres: [ "9.6", "10", "11", "12", "13" ]
     runs-on: ubuntu-latest
     container:
       image: ruby:${{ matrix.ruby }}
