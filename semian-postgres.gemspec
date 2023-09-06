@@ -14,7 +14,7 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = Gem::Requirement.new('>=2.7.0')
 
   spec.add_runtime_dependency 'pg', '~> 1.5.0'
-  spec.add_runtime_dependency 'semian', '~> 0.16.0'
+  spec.add_runtime_dependency 'semian', ['>=0.16.0', '<0.17.0']
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
