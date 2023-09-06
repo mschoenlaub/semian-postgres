@@ -21,6 +21,7 @@ Gem::Specification.new do |spec|
   spec.metadata['changelog_uri'] = "#{spec.homepage}/main/CHANGELOG.md"
 
   spec.files = Dir.glob('{lib}/**/*', File::FNM_DOTMATCH)
+  spec.files += ['LICENSE.md', 'README.md']
   spec.require_paths = ['lib']
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
