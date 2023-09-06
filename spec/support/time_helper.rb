@@ -5,10 +5,10 @@ module TimeHelper
     now_timestamp = Time.now
 
     new_monotonic = now_monotonic + val
-    Process.stubs(:clock_gettime).with(Process::CLOCK_MONOTONIC).returns(new_monotonic)
+    Process.stub(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(new_monotonic)
 
     new_timestamp = now_timestamp + val
-    Time.stubs(:now).returns(new_timestamp)
+    Time.stub(:now).and_return(new_timestamp)
 
     yield
   ensure
