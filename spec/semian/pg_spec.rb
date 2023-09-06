@@ -25,14 +25,14 @@ RSpec.describe PG do
 
         expect { conn.reset }.to raise_error(PG::CircuitOpenError)
 
-        Timecop.travel(5 + 1) do
+        time_travel(5 + 1) do
           # The circuit is half open, so the timeout is 1 second
           proxy.downstream(:latency, latency: 1500).apply do
             expect { conn.reset }.to raise_error(PG::Error)
           end
         end
 
-        Timecop.travel(10 + 1) do
+        time_travel(10 + 1) do
           expect { conn.reset }.not_to raise_error
         end
 
@@ -85,7 +85,7 @@ RSpec.describe PG do
         conn.public_send(f, *statement_timeout_query)
         expect { conn.public_send(f, *long_query) }.to raise_error(PG::QueryCanceled)
         expect { conn.public_send(f, *query) }.to raise_error(PG::CircuitOpenError)
-        Timecop.travel(5 + 1) do
+        time_travel(5 + 1) do
           expect(conn.public_send(f, *query).column_values(0).first).to eq('1')
         end
       end
