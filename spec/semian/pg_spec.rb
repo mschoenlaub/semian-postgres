@@ -24,11 +24,11 @@ RSpec.describe PG do
 
         expect { conn.reset }.to raise_error(PG::CircuitOpenError)
 
-        expect {
+        expect do
           time_travel(5 + 1) do
             conn.reset
           end
-        }.to timeout_within(0.1).of(2)
+        end.to timeout_within(0.1).of(2)
 
         time_travel(10 + 1) do
           expect { conn.reset }.not_to raise_error

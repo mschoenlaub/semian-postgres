@@ -39,7 +39,7 @@ RSpec.configure do |config|
   end
 
   config.before(:all) do
-    Semian.logger = Logger.new(STDOUT, Logger::DEBUG)
+    Semian.logger = Logger.new($stdout, Logger::DEBUG)
     Semian::PG.semian_configuration = DEFAULT_SEMIAN_CONFIGURATION
     Toxiproxy.host = URI::HTTP.build(
       host: TOXIPROXY_HOST,
