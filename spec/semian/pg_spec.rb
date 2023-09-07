@@ -4,7 +4,6 @@ require 'pg'
 require 'semian'
 require 'semian/pg'
 require 'toxiproxy'
-require 'timecop'
 
 RSpec.describe PG do
   let(:proxy) { Toxiproxy[:semian_test_pg] }
@@ -17,7 +16,7 @@ RSpec.describe PG do
       end
       with_semian_configuration(options) do
         conn = connect_to_pg!
-        proxy.downstream(:latency, latency: 2200).apply do
+        proxy.downstream(:latency, latency: 3200).apply do
           2.times do
             expect { conn.reset }.to raise_error(PG::Error)
           end
@@ -25,18 +24,17 @@ RSpec.describe PG do
 
         expect { conn.reset }.to raise_error(PG::CircuitOpenError)
 
-        Timecop.travel(5 + 1) do
-          # The circuit is half open, so the timeout is 1 second
-          proxy.downstream(:latency, latency: 1500).apply do
-            expect { conn.reset }.to raise_error(PG::Error)
+        expect do
+          time_travel(5 + 1) do
+            conn.reset
           end
-        end
+        end.to timeout_within(0.1).of(2)
 
-        Timecop.travel(10 + 1) do
+        time_travel(10 + 1) do
           expect { conn.reset }.not_to raise_error
         end
 
-        expect(conn.conninfo_hash).to include(connect_timeout: '2')
+        expect(conn.conninfo_hash).to include(connect_timeout: '3')
       end
     end
   end
@@ -85,7 +83,7 @@ RSpec.describe PG do
         conn.public_send(f, *statement_timeout_query)
         expect { conn.public_send(f, *long_query) }.to raise_error(PG::QueryCanceled)
         expect { conn.public_send(f, *query) }.to raise_error(PG::CircuitOpenError)
-        Timecop.travel(5 + 1) do
+        time_travel(5 + 1) do
           expect(conn.public_send(f, *query).column_values(0).first).to eq('1')
         end
       end

@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 
+require 'benchmark'
 module SemianHelpers
   def with_semian_configuration(options)  # rubocop:disable Metrics/AbcSize
     orig_semian_options = Semian::PG.semian_configuration
@@ -33,4 +34,21 @@ end
 
 RSpec.configure do |config|
   config.include(SemianHelpers)
+
+  RSpec::Matchers.define :timeout_within do |delta|
+    chain :of, :expected
+    match do |block|
+      latency = ((expected + (3 * delta)) * 1000).to_i
+
+      bench = Benchmark.measure do
+        expect { proxy.downstream(:latency, latency: latency).apply(&block) }.to raise_error(PG::Error)
+      end
+
+      expect(bench.real).to be_within(delta).of(expected)
+    end
+    failure_message do |block|
+      "expected that #{block} would timeout within #{delta} seconds of #{expected} seconds"
+    end
+    supports_block_expectations
+  end
 end

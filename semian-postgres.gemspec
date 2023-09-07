@@ -14,14 +14,14 @@ Gem::Specification.new do |spec|
   spec.required_ruby_version = Gem::Requirement.new('>=2.7.0')
 
   spec.add_runtime_dependency 'pg', '~> 1.5.0'
-  spec.add_runtime_dependency 'semian', ['>=0.16.0', '<0.17.0']
+  spec.add_runtime_dependency 'semian', ['>=0.16.0', '<0.18.0']
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
   spec.metadata['changelog_uri'] = "#{spec.homepage}/main/CHANGELOG.md"
 
   spec.files = Dir.glob('{lib}/**/*', File::FNM_DOTMATCH)
-  spec.files += ['LICENSE.md', 'README.md']
+  spec.files += ['LICENSE.txt', 'README.md']
   spec.require_paths = ['lib']
   spec.metadata['rubygems_mfa_required'] = 'true'
 end
