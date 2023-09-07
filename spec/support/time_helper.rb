@@ -5,15 +5,15 @@ module TimeHelper
     now_timestamp = Time.now
 
     new_monotonic = now_monotonic + val
-    Process.stub(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(new_monotonic)
+    allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(new_monotonic)
 
     new_timestamp = now_timestamp + val
-    Time.stub(:now).and_return(new_timestamp)
+    allow(Time).to receive(:now).and_return(new_timestamp)
 
     yield
   ensure
-    Time.unstub(:now)
-    Process.unstub(:clock_gettime)
+    RSpec::Mocks.space.proxy_for(Time).reset
+    RSpec::Mocks.space.proxy_for(Process).reset
   end
 end
 
