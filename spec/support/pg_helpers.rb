@@ -3,7 +3,7 @@
 module PGHelpers
   def connect_to_pg!
     PG::Connection.connect(
-      connect_timeout: 2,
+      connect_timeout: 3,
       host: TOXIPROXY_HOST,
       port: 8475
     )
