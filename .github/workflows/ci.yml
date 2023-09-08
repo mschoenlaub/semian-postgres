@@ -6,11 +6,9 @@ on:  # yamllint disable-line rule:truthy
     branches:
       - main
   pull_request:
-
 concurrency:
   group: ${{ github.ref }}-bundle
   cancel-in-progress: true
-
 jobs:
   rubocop:
     name: Rubocop
@@ -18,23 +16,19 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - uses: ruby/setup-ruby@v1
         with:
           ruby-version: ${{ inputs.ruby }}
           bundler-cache: true
-
       - name: Run rubocop
         run: |
           bundle exec rubocop
-
   yamllint:
     name: 'Yamllint'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-
       - name: Yamllint
         uses: karancode/yamllint-github-action@dd59165b84d90d37fc919c3c7dd84c7e37cd6bfb
         with:
@@ -81,12 +75,10 @@ jobs:
           key: ${{ runner.os }}-ruby-${{ matrix.ruby }}-gems-${{ hashFiles( format('{0}.lock', env.BUNDLE_GEMFILE) ) }}
           restore-keys: |
             ${{ runner.os }}-ruby-${{ matrix.ruby }}-gems-
-
       - name: Bundle
         run: |
           bundle config path vendor/bundle
           bundle install
-
       - name: Run tests
         run: |
           bundle exec rspec

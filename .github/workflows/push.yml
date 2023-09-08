@@ -1,0 +1,29 @@
+---
+name: Publish to GH
+on:
+  push:
+    tags:
+      - 'v*.*.*'
+env:
+  GEM_NAME: "semian-postgres"
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Build gem
+        run: |
+          gem build ${{ env.GEM_NAME }}.gemspec -o ${{ env.GEM_NAME }}.gem
+      - name: Set Credentials
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+        run: |
+          mkdir -p $HOME/.gem
+          touch $HOME/.gem/credentials
+          chmod 0600 $HOME/.gem/credentials
+          printf -- "---\n:github: Bearer ${GITHUB_TOKEN}\n" > $HOME/.gem/credentials
+      - name: Publish to GitHub Packages
+        run: |
+          export OWNER=$( echo ${{ github.repository }} | cut -d "/" -f 1 )
+          gem push --KEY github --host https://rubygems.pkg.github.com/${OWNER} *.gem
+          gem push *.gem
+
