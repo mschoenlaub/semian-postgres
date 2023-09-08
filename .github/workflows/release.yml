@@ -23,3 +23,6 @@ jobs:
           prerelease: true
           package-name: ${{ env.GEM_NAME }}
           version-file: "lib/semian/pg/version.rb"
+      - name: Publish to GHP
+        uses: ./.github/workflows/push.yml
+        if: ${{ steps.release.outputs.release_created }}
