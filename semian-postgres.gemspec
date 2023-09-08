@@ -19,6 +19,7 @@ Gem::Specification.new do |spec|
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
   spec.metadata['changelog_uri'] = "#{spec.homepage}/main/CHANGELOG.md"
+  spec.metadata['github_repo'] = 'ssh://github.com/mschoenlaub/semian-postgres'
 
   spec.files = Dir.glob('{lib}/**/*', File::FNM_DOTMATCH)
   spec.files += %w[LICENSE.txt README.md]
