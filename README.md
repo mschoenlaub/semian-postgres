@@ -12,7 +12,7 @@ You can read more about Semian [here](https://github.com/Shopify/semian)).
 Add the gem to your `Gemfile` and require it in your application.
 
 ```ruby
-gem 'semian-pg', require: %w(semian semian/pg)
+gem 'semian-postgres', require: %w(semian semian/pg)
 ```
 
 
