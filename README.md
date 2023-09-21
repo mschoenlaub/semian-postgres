@@ -69,6 +69,12 @@ docker compose exec dev rake rubocop spec
 
 Bug reports and pull requests are welcome on [GitHub](https://github.com/mschoenlaub/semian-postgres).
 
+### Thanks to everyone that has already contributed
+
+<a href="https://github.com/mschoenlaub/semian-postgres/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=mschoenlaub/semian-postgres" alt="Pictures of the folks who have contributed to the project" />
+</a>
+
 
 ## License
 
