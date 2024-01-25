@@ -133,7 +133,7 @@ module Semian
 
       private
 
-      def _iopts(*args)  # rubocop:disable Metrics/AbcSize
+      def _iopts(*args) # rubocop:disable Metrics/AbcSize
         option_string = parse_connect_args(*args)
         iopts = conninfo_parse(option_string).each_with_object({}) do |h, o|
           o[h[:keyword].to_sym] = h[:val] if h[:val]

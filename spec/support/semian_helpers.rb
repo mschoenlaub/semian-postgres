@@ -2,7 +2,7 @@
 
 require 'benchmark'
 module SemianHelpers
-  def with_semian_configuration(options)  # rubocop:disable Metrics/AbcSize
+  def with_semian_configuration(options) # rubocop:disable Metrics/AbcSize
     orig_semian_options = Semian::PG.semian_configuration
     Semian::PG.instance_variable_set(:@semian_configuration, nil)
     mutated_objects = {}

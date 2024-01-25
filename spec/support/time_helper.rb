@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module TimeHelper
-  def time_travel(val)  # rubocop:disable Metrics/AbcSize
+  def time_travel(val) # rubocop:disable Metrics/AbcSize
     now_monotonic = Process.clock_gettime(Process::CLOCK_MONOTONIC)
     now_timestamp = Time.now
 
