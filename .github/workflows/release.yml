@@ -48,4 +48,4 @@ jobs:
           gem push --KEY github --host https://rubygems.pkg.github.com/${OWNER} *.gem
       - name: Publish to RubyGems
         run: |
-          gem push --KEY github --host https://rubygems.org *.gem
+          gem push --KEY rubygems_api_key --host https://rubygems.org *.gem
