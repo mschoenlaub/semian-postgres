@@ -9,7 +9,7 @@
   "packages": {
     ".": {
       "version-file": "lib/semian/pg/version.rb",
-      "release-type": "ruby",
+      "release-type": "ruby"
     }
   }
 }
