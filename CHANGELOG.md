@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.5](https://github.com/mschoenlaub/semian-postgres/compare/v0.1.4...v0.1.5) (2024-01-25)
+
+
+### Features
+
+* **deps:** support up to semian 0.21 ([#18](https://github.com/mschoenlaub/semian-postgres/issues/18)) ([81b5337](https://github.com/mschoenlaub/semian-postgres/commit/81b5337f777852c11236390653ba54c3cf790b3e))
+
 ## [0.1.4](https://github.com/mschoenlaub/semian-postgres/compare/v0.1.3...v0.1.4) (2023-09-08)
 
 
