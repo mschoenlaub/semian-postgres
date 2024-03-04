@@ -30,7 +30,7 @@ Bulkheading is disabled, because this is not supported with servers that have a 
 
 ```ruby
 require "semian"
-require "semian/postgres"
+require "semian/pg"
 
 SEMIAN_PARAMETERS = {
   circuit_breaker: true,
