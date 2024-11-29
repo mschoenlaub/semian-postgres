@@ -34,8 +34,6 @@ jobs:
         run: |
           gem build ${{ env.GEM_NAME }}.gemspec -o ${{ env.GEM_NAME }}.gem
       - name: Set Credentials
-        env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
         run: |
           mkdir -p $HOME/.gem
           touch $HOME/.gem/credentials
@@ -43,9 +41,15 @@ jobs:
           printf -- "---\n:github: Bearer ${GITHUB_TOKEN}\n" >> $HOME/.gem/credentials
           printf -- ":rubygems_api_key: Bearer ${RUBYGEMS_TOKEN}\n" >> $HOME/.gem/credentials
       - name: Publish to GitHub Packages
+        if: always()
+        env:
+          GEM_HOST_API_KEY: ${{secrets.GITHUB_TOKEN}}
         run: |
           export OWNER=$( echo ${{ github.repository }} | cut -d "/" -f 1 )
-          gem push --KEY github --host https://rubygems.pkg.github.com/${OWNER} *.gem
+          gem push --host https://rubygems.pkg.github.com/${OWNER} *.gem
       - name: Publish to RubyGems
+        if: always()
+        env:
+          GEM_HOST_API_KEY: ${{secrets.RUBYGEMS_TOKEN}}
         run: |
-          gem push --KEY rubygems_api_key --host https://rubygems.org *.gem
+          gem push -host https://rubygems.org *.gem
