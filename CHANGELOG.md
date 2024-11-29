@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.6](https://github.com/mschoenlaub/semian-postgres/compare/v0.1.5...v0.1.6) (2024-11-29)
+
+
+### Bug Fixes
+
+* declare incompatibility with pg 1.5.9 ([#22](https://github.com/mschoenlaub/semian-postgres/issues/22)) ([6061e10](https://github.com/mschoenlaub/semian-postgres/commit/6061e1085d4ff3abcb06f424a29eacbaef00ec30))
+
 ## [0.1.5](https://github.com/mschoenlaub/semian-postgres/compare/v0.1.4...v0.1.5) (2024-01-25)
 
 
