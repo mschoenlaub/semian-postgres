@@ -25,8 +25,8 @@ Layout/LineLength:
 RSpec/Dialect:
   PreferredMethods:
     background: :before
-    scenario:   :it
-    xscenario:  :xit
-    given:      :let
-    given!:     :let!
-    feature:    :describe
+    scenario: :it
+    xscenario: :xit
+    given: :let
+    given!: :let!
+    feature: :describe
