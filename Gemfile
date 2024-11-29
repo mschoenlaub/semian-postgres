@@ -9,7 +9,6 @@ gem 'rake', '~> 12.0'
 
 group :test do
   gem 'rspec', '~> 3.0'
-  gem 'ruby-debug-ide', '~> 0.7.3'
   gem 'toxiproxy', '~> 2.0 '
 end
 
