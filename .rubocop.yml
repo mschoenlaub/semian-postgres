@@ -22,5 +22,11 @@ RSpec/MultipleMemoizedHelpers:
 Layout/LineLength:
   Enabled: 160
 
-RSpec/Capybara/FeatureMethods:
-  Enabled: false
+RSpec/Dialect:
+  PreferredMethods:
+    background: :before
+    scenario: :it
+    xscenario: :xit
+    given: :let
+    given!: :let!
+    feature: :describe

@@ -13,8 +13,8 @@ Gem::Specification.new do |spec|
   spec.license = 'MIT'
   spec.required_ruby_version = Gem::Requirement.new('>=2.7.0')
 
-  spec.add_runtime_dependency 'pg', '~> 1.5.0'
-  spec.add_runtime_dependency 'semian', %w[>=0.16.0 <0.22.0]
+  spec.add_dependency 'pg', %w[>=1.5.0 <1.5.9]
+  spec.add_dependency 'semian', %w[>=0.16.0 <0.22.0]
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
