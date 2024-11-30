@@ -28,7 +28,7 @@ RSpec.describe PG do
           time_travel(5 + 1) do
             conn.reset
           end
-        end.to timeout_within(0.1).of(2)
+        end.to timeout_within(0.1).of(1)
 
         time_travel(10 + 1) do
           expect { conn.reset }.not_to raise_error
