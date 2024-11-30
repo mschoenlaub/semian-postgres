@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.1.8](https://github.com/mschoenlaub/semian-postgres/compare/v0.1.7...v0.1.8) (2024-11-30)
+
+
+### Features
+
+* add pg 1.5.9 support ([#26](https://github.com/mschoenlaub/semian-postgres/issues/26)) ([26fc5c9](https://github.com/mschoenlaub/semian-postgres/commit/26fc5c9918224b85793e8099bfdf84a236b3b737))
+
 ## [0.1.7](https://github.com/mschoenlaub/semian-postgres/compare/v0.1.6...v0.1.7) (2024-11-30)
 
 
