@@ -52,4 +52,4 @@ jobs:
         env:
           GEM_HOST_API_KEY: ${{secrets.RUBYGEMS_TOKEN}}
         run: |
-          gem push -host https://rubygems.org *.gem
+          gem push --host https://rubygems.org *.gem
