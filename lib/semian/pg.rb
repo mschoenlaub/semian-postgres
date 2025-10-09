@@ -15,8 +15,8 @@ module PG
 
   # This allows us to use semian as a drop-in replacement.
   class SemianError < PG::Error
-    def initialize(semian_identifier, *args)
-      super(*args)
+    def initialize(semian_identifier, *)
+      super(*)
       @semian_identifier = semian_identifier
     end
   end
@@ -81,7 +81,7 @@ module Semian
       [::PG::ConnectionBad, ::PG::QueryCanceled].freeze
     end
 
-    def async_connect_or_reset(*args)
+    def async_connect_or_reset(*)
       acquire_semian_resource(adapter: :pg, scope: :connection) do
         super
       end
@@ -125,16 +125,16 @@ module Semian
 
     # The pg gem defines some necessary methods on class level, which is why we have to hook into them.
     module ClassMethods
-      def connect_start(*args)
+      def connect_start(*)
         conn = super
-        conn.instance_variable_set(:@iopts, _iopts(*args))
+        conn.instance_variable_set(:@iopts, _iopts(*))
         conn
       end
 
       private
 
-      def _iopts(*args) # rubocop:disable Metrics/AbcSize
-        option_string = parse_connect_args(*args)
+      def _iopts(*) # rubocop:disable Metrics/AbcSize
+        option_string = parse_connect_args(*)
         iopts = conninfo_parse(option_string).each_with_object({}) do |h, o|
           o[h[:keyword].to_sym] = h[:val] if h[:val]
         end

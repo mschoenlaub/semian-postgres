@@ -6,7 +6,7 @@ TOXIPROXY_HOST = ENV.fetch('TOXIPROXY_HOST', 'localhost')
 PGHOST = ENV.fetch('PGHOST', 'localhost')
 PGPORT = ENV.fetch('PGPORT', 5432)
 
-Dir['./spec/support/**/*.rb'].sort.each { |f| require f }
+Dir['./spec/support/**/*.rb'].each { |f| require f }
 
 SEMIAN_OPTIONS = {
   name: :testing,
