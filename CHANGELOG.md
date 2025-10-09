@@ -1,5 +1,18 @@
 # Changelog
 
+## [0.2.0](https://github.com/mschoenlaub/semian-postgres/compare/v0.1.8...v0.2.0) (2025-10-09)
+
+
+### ⚠ BREAKING CHANGES
+
+* drops support for ruby < 3.2
+
+### Features
+
+* adds support for pg 1.6.x ([6f2053d](https://github.com/mschoenlaub/semian-postgres/commit/6f2053df9e665066d0544d5484246ca5305cea7e))
+* adds support for semian 0.24.x and 0.25.x ([6f2053d](https://github.com/mschoenlaub/semian-postgres/commit/6f2053df9e665066d0544d5484246ca5305cea7e))
+* drops support for ruby &lt; 3.2 ([6f2053d](https://github.com/mschoenlaub/semian-postgres/commit/6f2053df9e665066d0544d5484246ca5305cea7e))
+
 ## [0.1.8](https://github.com/mschoenlaub/semian-postgres/compare/v0.1.7...v0.1.8) (2024-11-30)
 
 
