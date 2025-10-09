@@ -11,10 +11,10 @@ Gem::Specification.new do |spec|
 
   spec.summary = 'Semian adapter for Postgres'
   spec.license = 'MIT'
-  spec.required_ruby_version = Gem::Requirement.new('>=2.7.0')
+  spec.required_ruby_version = Gem::Requirement.new('>=3.2.0')
 
-  spec.add_dependency 'pg', '~> 1.5.0'
-  spec.add_dependency 'semian', %w[>=0.16.0 <0.23.0]
+  spec.add_dependency 'pg', '~> 1.6.2'
+  spec.add_dependency 'semian', %w[>=0.16.0 <0.25.4]
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
