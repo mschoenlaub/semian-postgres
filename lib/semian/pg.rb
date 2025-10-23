@@ -104,11 +104,11 @@ module Semian
     end
 
     QUERY_METHODS.each do |method|
-      define_method(method) do |*args|
-        return super(*args) if query_whitelisted?(args[0])
+      define_method(method) do |*args, &block|
+        return super(*args, &block) if query_whitelisted?(args[0])
 
         acquire_semian_resource(adapter: :pg, scope: :query) do
-          super(*args)
+          super(*args, &block)
         end
       end
     end

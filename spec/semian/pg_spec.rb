@@ -68,6 +68,22 @@ RSpec.describe PG do
         end
         conn.public_send(f, 'ROLLBACK')
       end
+
+      describe 'executing commands' do
+        let(:block) { proc {} }
+
+        it 'executes a command' do
+          allow(block).to receive(:call)
+
+          expect do
+            conn.public_send(f, *query) do |result|
+              block.call(result)
+            end
+          end.not_to raise_error
+
+          expect(block).to have_received(:call).with(an_instance_of(PG::Result))
+        end
+      end
     end
 
     describe 'Error handling' do
