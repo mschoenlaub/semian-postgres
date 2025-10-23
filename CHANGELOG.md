@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.1](https://github.com/mschoenlaub/semian-postgres/compare/v0.2.0...v0.2.1) (2025-10-23)
+
+
+### Features
+
+* add block support ([8827a6f](https://github.com/mschoenlaub/semian-postgres/commit/8827a6f7644569d836097c0319f6e2dd0e22ee70))
+
 ## [0.2.0](https://github.com/mschoenlaub/semian-postgres/compare/v0.1.8...v0.2.0) (2025-10-09)
 
 
