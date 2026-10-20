@@ -1,0 +1,11 @@
+# frozen_string_literal: true
+
+# Test dependencies shared by the consumer gemfiles in this directory.
+gem 'rake', '~> 12.0'
+
+group :test do
+  gem 'benchmark'
+  gem 'logger'
+  gem 'rspec', '~> 3.0'
+  gem 'toxiproxy', '~> 2.0'
+end

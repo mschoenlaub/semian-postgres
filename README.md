@@ -91,6 +91,20 @@ docker compose exec dev bin/setup
 docker compose exec dev rake rubocop spec
 ```
 
+### Integration specs
+
+The specs under `spec/integration/` run the adapter underneath Active Record and Sequel.
+They are excluded from the default `rspec` run because each needs its consumer gem,
+provided by a gemfile under `gemfiles/`:
+
+```bash
+BUNDLE_GEMFILE=gemfiles/activerecord_8_1.gemfile bundle install
+BUNDLE_GEMFILE=gemfiles/activerecord_8_1.gemfile bundle exec rspec spec/integration/active_record_spec.rb
+BUNDLE_GEMFILE=gemfiles/sequel.gemfile bundle exec rspec spec/integration/sequel_spec.rb
+```
+
+CI runs them against Active Record 7.1 through 8.1 and `rails/rails` main, and against Sequel 5.
+
 
 ## Contributing
 

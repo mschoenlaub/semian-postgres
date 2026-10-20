@@ -39,3 +39,14 @@ Style/OneClassPerFile:
 
 Style/EmptyClassDefinition:
   Enabled: false
+
+# The integration specs describe the adapter underneath a consumer rather than
+# a class, and set up one connection pool and table for the whole suite.
+RSpec/DescribeClass:
+  IgnoredMetadata:
+    type:
+      - integration
+
+RSpec/BeforeAfterAll:
+  Exclude:
+    - spec/integration/**/*
