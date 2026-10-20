@@ -114,15 +114,17 @@ RSpec.describe Semian::PG do
       expect(conn.exec('SELECT 1').column_values(0).first).to eq('1')
     end
 
-    it 'opens the circuit when the connection drops while waiting' do
+    it 'counts a connection lost while waiting on the next statement' do
       conn.send_query('SELECT pg_sleep(2)')
 
       proxy.down do
         expect { conn.get_last_result }.to raise_error(PG::ConnectionBad) { |e|
-          expect(e.semian_identifier).to eq(conn.semian_identifier)
+          expect(e.semian_identifier).to be_nil
         }
       end
-      expect { conn.exec('SELECT 1') }.to raise_error(PG::CircuitOpenError)
+      expect(Semian['pg_testing']).to be_closed
+      expect { conn.exec('SELECT 1') }.to raise_error(PG::ConnectionBad)
+      expect(Semian['pg_testing']).to be_open
     end
   end
 
