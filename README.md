@@ -15,6 +15,8 @@ Add the gem to your `Gemfile` and require it in your application.
 gem 'semian-postgres', require: %w(semian semian/pg)
 ```
 
+The adapter needs Semian 0.28 or newer and the pg gem 1.5 or newer.
+
 
 ## Configuration
 

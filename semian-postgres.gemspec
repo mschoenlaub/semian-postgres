@@ -15,7 +15,7 @@ Gem::Specification.new do |spec|
 
   spec.add_dependency 'concurrent-ruby'
   spec.add_dependency 'pg', '>= 1.5.0', '< 1.7.0'
-  spec.add_dependency 'semian', %w[>=0.16.0 <1.0.0]
+  spec.add_dependency 'semian', '>= 0.28.0', '< 1.0.0'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = spec.homepage
