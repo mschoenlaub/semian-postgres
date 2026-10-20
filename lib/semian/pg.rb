@@ -9,7 +9,7 @@ module PG
   ::PG::Error.include(Semian::AdapterError)
   ::PG::QueryCanceled.class_eval do
     def marks_semian_circuits?
-      message != ~/canceling statement due to statement timeout/
+      message !~ /canceling statement due to statement timeout/
     end
   end
 

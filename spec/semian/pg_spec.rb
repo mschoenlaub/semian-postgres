@@ -8,6 +8,22 @@ require 'toxiproxy'
 RSpec.describe PG do
   let(:proxy) { Toxiproxy[:semian_test_pg] }
 
+  describe PG::QueryCanceled do
+    describe '#marks_semian_circuits?' do
+      it 'does not mark a statement timeout as a circuit failure' do
+        error = described_class.new('canceling statement due to statement timeout')
+
+        expect(error.marks_semian_circuits?).to be(false)
+      end
+
+      it 'marks other query cancellations as circuit failures' do
+        error = described_class.new('canceling statement due to user request')
+
+        expect(error.marks_semian_circuits?).to be(true)
+      end
+    end
+  end
+
   describe 'connection' do
     it_behaves_like 'a resource', :connect_to_pg!, :connection, %i[exec query exec prepare exec_prepared exec_params]
     it 'changes the timeout when the circuit is half open' do
@@ -87,7 +103,7 @@ RSpec.describe PG do
     end
 
     describe 'Error handling' do
-      let(:statement_timeout_query) { ['set statement_timeout to 1'] }
+      let(:statement_timeout_query) { ['set statement_timeout to 100'] }
 
       it 'does not open the circuit on SyntaxError' do
         2.times do
@@ -95,13 +111,11 @@ RSpec.describe PG do
         end
       end
 
-      it 'does open the circuit on statement timeout' do
+      it 'does not open the circuit on statement timeout' do
         conn.public_send(f, *statement_timeout_query)
         expect { conn.public_send(f, *long_query) }.to raise_error(PG::QueryCanceled)
-        expect { conn.public_send(f, *query) }.to raise_error(PG::CircuitOpenError)
-        time_travel(5 + 1) do
-          expect(conn.public_send(f, *query).column_values(0).first).to eq('1')
-        end
+        conn.public_send(f, 'RESET statement_timeout')
+        expect(conn.public_send(f, *query).column_values(0).first).to eq('1')
       end
 
       it 'does tag network errors' do
