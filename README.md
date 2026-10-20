@@ -16,6 +16,13 @@ gem 'semian-postgres', require: %w(semian semian/pg)
 ```
 
 
+Every way of sending a statement through a `PG::Connection` is protected: the blocking
+`exec`, `exec_params`, `prepare`, `exec_prepared` and `describe_prepared` families, and the
+asynchronous `send_query`, `send_query_params`, `send_query_prepared` and `send_prepare` calls.
+With the asynchronous API the circuit breaker rejects the `send_*` call while the circuit is
+open, and records failures that surface later in `get_result`, `get_last_result` or
+`PG::Result#check`. The bulkhead ticket is only held for the duration of the `send_*` call.
+
 ## Configuration
 
 The adapter is configured by a callback function, which would be ideally defined in some sort of initialization file.
