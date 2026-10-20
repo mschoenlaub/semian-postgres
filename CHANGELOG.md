@@ -1,5 +1,16 @@
 # Changelog
 
+## [0.3.0](https://github.com/mschoenlaub/semian-postgres/compare/v0.2.2...v0.3.0) (2026-10-20)
+
+
+### ⚠ BREAKING CHANGES
+
+* require semian 0.28 or newer ([#42](https://github.com/mschoenlaub/semian-postgres/issues/42))
+
+### Features
+
+* require semian 0.28 or newer ([#42](https://github.com/mschoenlaub/semian-postgres/issues/42)) ([ea69583](https://github.com/mschoenlaub/semian-postgres/commit/ea69583c8a8bbd7d00a63a04d40415a49a86eff9))
+
 ## [0.2.2](https://github.com/mschoenlaub/semian-postgres/compare/v0.2.1...v0.2.2) (2026-10-20)
 
 
