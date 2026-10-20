@@ -82,3 +82,55 @@ jobs:
       - name: Run tests
         run: |
           bundle exec rspec
+  integration:
+    name: ${{ matrix.gemfile }} (Ruby ${{ matrix.ruby }})
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {gemfile: activerecord_7_1, spec: active_record, ruby: "3.3"}
+          - {gemfile: activerecord_7_2, spec: active_record, ruby: "3.4"}
+          - {gemfile: activerecord_8_0, spec: active_record, ruby: "3.4"}
+          - {gemfile: activerecord_8_1, spec: active_record, ruby: "3.4"}
+          - {gemfile: activerecord_edge, spec: active_record, ruby: "3.4"}
+          - {gemfile: sequel, spec: sequel, ruby: "3.4"}
+    runs-on: ubuntu-latest
+    container:
+      image: ruby:${{ matrix.ruby }}
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_PASSWORD: password
+        options: >-
+          --health-cmd="pg_isready"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=5
+      toxiproxy:
+        image: ghcr.io/shopify/toxiproxy:2.5.0
+    env:
+      CI: "1"
+      PGHOST: "postgres"
+      PGUSER: "postgres"
+      PGPASSWORD: "password"
+      TOXIPROXY_HOST: "toxiproxy"
+      BUNDLE_GEMFILE: gemfiles/${{ matrix.gemfile }}.gemfile
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Cache
+        uses: actions/cache@v3
+        with:
+          path: vendor/bundle
+          key: ${{ runner.os }}-ruby-${{ matrix.ruby }}-${{ matrix.gemfile }}-gems-${{ hashFiles(env.BUNDLE_GEMFILE) }}
+          restore-keys: |
+            ${{ runner.os }}-ruby-${{ matrix.ruby }}-${{ matrix.gemfile }}-gems-
+      - name: Bundle
+        run: |
+          bundle config path vendor/bundle
+          bundle install
+      - name: Run integration specs
+        run: |
+          bundle exec rspec spec/integration/${{ matrix.spec }}_spec.rb

@@ -6,6 +6,7 @@ module TimeHelper
     now_timestamp = Time.now
 
     new_monotonic = now_monotonic + val
+    allow(Process).to receive(:clock_gettime).and_call_original
     allow(Process).to receive(:clock_gettime).with(Process::CLOCK_MONOTONIC).and_return(new_monotonic)
 
     new_timestamp = now_timestamp + val

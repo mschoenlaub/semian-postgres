@@ -29,3 +29,4 @@ Gemfile.lock
 .rvmrc
 .DS_Store
 .rspec_status
+gemfiles/*.lock
