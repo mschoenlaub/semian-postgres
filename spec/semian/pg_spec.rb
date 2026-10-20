@@ -10,16 +10,16 @@ RSpec.describe PG do
 
   describe PG::QueryCanceled do
     describe '#marks_semian_circuits?' do
-      it 'does not mark a statement timeout as a circuit failure' do
+      it 'marks a statement timeout as a circuit failure' do
         error = described_class.new('canceling statement due to statement timeout')
 
-        expect(error.marks_semian_circuits?).to be(false)
+        expect(error.marks_semian_circuits?).to be(true)
       end
 
-      it 'marks other query cancellations as circuit failures' do
+      it 'does not mark a user requested cancellation as a circuit failure' do
         error = described_class.new('canceling statement due to user request')
 
-        expect(error.marks_semian_circuits?).to be(true)
+        expect(error.marks_semian_circuits?).to be(false)
       end
     end
   end
@@ -111,10 +111,25 @@ RSpec.describe PG do
         end
       end
 
-      it 'does not open the circuit on statement timeout' do
+      it 'opens the circuit on statement timeout' do
         conn.public_send(f, *statement_timeout_query)
         expect { conn.public_send(f, *long_query) }.to raise_error(PG::QueryCanceled)
-        conn.public_send(f, 'RESET statement_timeout')
+        expect { conn.public_send(f, *query) }.to raise_error(PG::CircuitOpenError)
+        time_travel(5 + 1) do
+          conn.public_send(f, 'RESET statement_timeout')
+          expect(conn.public_send(f, *query).column_values(0).first).to eq('1')
+        end
+      end
+
+      it 'does not open the circuit when a query is cancelled' do
+        background do
+          expect { conn.public_send(f, *long_query) }.to raise_error(PG::QueryCanceled) { |e|
+            expect(e.semian_identifier).to eq(conn.semian_identifier)
+          }
+        end
+        conn.cancel
+        yield_to_background
+
         expect(conn.public_send(f, *query).column_values(0).first).to eq('1')
       end
 
