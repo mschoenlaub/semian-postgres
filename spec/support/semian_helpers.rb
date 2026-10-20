@@ -2,7 +2,12 @@
 
 require 'benchmark'
 module SemianHelpers
+  # Takes either the configuration proc or a plain options hash to use for every host.
   def with_semian_configuration(options) # rubocop:disable Metrics/AbcSize
+    unless options.respond_to?(:call)
+      shared_options = options
+      options = proc { |_host, _port| shared_options }
+    end
     orig_semian_options = Semian::PG.semian_configuration
     Semian::PG.instance_variable_set(:@semian_configuration, nil)
     mutated_objects = {}
