@@ -112,12 +112,6 @@ module Semian
       send_query: 0, send_query_params: 0, send_query_prepared: nil, send_prepare: nil
     }.freeze
 
-    # Methods that wait for the server's answer after a send_* call.
-    RESULT_METHODS = %i[
-      get_result async_get_result sync_get_result
-      get_last_result async_get_last_result sync_get_last_result
-    ].freeze
-
     def query_whitelisted?(sql)
       QUERY_WHITELIST =~ sql
     rescue ArgumentError
@@ -137,20 +131,12 @@ module Semian
     end
 
     # With the asynchronous API the statement is sent through one of the wrapped
-    # send_* methods, but its failure only surfaces later: connection failures while
-    # waiting in #get_result, and statement failures when PG::Result#check is called.
-    # Neither happens inside a wrapped call, so the error is recorded here instead.
-    RESULT_METHODS.each do |method|
-      define_method(method) do |*args, **kwargs, &block|
-        super(*args, **kwargs, &block)
-      rescue *RESOURCE_EXCEPTIONS => e
-        semian_record_failure(e)
-        raise
-      end
-    end
-
-    # Records an error that was raised outside of a wrapped call against the circuit
-    # and tags it with the resource identifier, the way acquire_semian_resource does.
+    # send_* methods, but a statement failure only surfaces later, when
+    # PG::Result#check is called outside of any wrapped call. This records it
+    # against the circuit and tags it with the resource identifier, the way
+    # acquire_semian_resource does. A connection lost while waiting for the result
+    # is not recorded here; the next statement on the connection fails inside a
+    # wrapped call and is counted there.
     def semian_record_failure(error)
       return if resource_already_acquired? || error.semian_identifier
 

@@ -20,8 +20,9 @@ Every way of sending a statement through a `PG::Connection` is protected: the bl
 `exec`, `exec_params`, `prepare`, `exec_prepared` and `describe_prepared` families, and the
 asynchronous `send_query`, `send_query_params`, `send_query_prepared` and `send_prepare` calls.
 With the asynchronous API the circuit breaker rejects the `send_*` call while the circuit is
-open, and records failures that surface later in `get_result`, `get_last_result` or
-`PG::Result#check`. The bulkhead ticket is only held for the duration of the `send_*` call.
+open, and a statement failure that surfaces later in `PG::Result#check` is recorded against
+the circuit. A connection lost while waiting in `get_result` is counted by the next statement
+instead. The bulkhead ticket is only held for the duration of the `send_*` call.
 
 ## Configuration
 
