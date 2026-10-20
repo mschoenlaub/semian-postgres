@@ -1,5 +1,5 @@
 ---
-require:
+plugins:
   - rubocop-rspec
   - rubocop-rake
 
@@ -30,3 +30,12 @@ RSpec/Dialect:
     given: :let
     given!: :let!
     feature: :describe
+
+# The adapter mirrors the layout of the upstream Semian adapters: the pg error
+# classes are patched next to the Semian::PG module in a single file, and the
+# Semian error subclasses are declared with Class.new.
+Style/OneClassPerFile:
+  Enabled: false
+
+Style/EmptyClassDefinition:
+  Enabled: false
