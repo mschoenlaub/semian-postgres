@@ -8,6 +8,9 @@ gemspec
 gem 'rake', '~> 12.0'
 
 group :test do
+  # Bundled gems from Ruby 4.0 on, used by semian and the spec helpers.
+  gem 'benchmark'
+  gem 'logger'
   gem 'rspec', '~> 3.0'
   gem 'toxiproxy', '~> 2.0'
 end
