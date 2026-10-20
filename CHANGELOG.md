@@ -1,5 +1,17 @@
 # Changelog
 
+## [0.2.2](https://github.com/mschoenlaub/semian-postgres/compare/v0.2.1...v0.2.2) (2026-10-20)
+
+
+### Features
+
+* support pg 1.7, Ruby 4.0 and PostgreSQL 18 ([#38](https://github.com/mschoenlaub/semian-postgres/issues/38)) ([5e9ea82](https://github.com/mschoenlaub/semian-postgres/commit/5e9ea82b991c315440caa1ece07fa4156fe71b5d))
+
+
+### Bug Fixes
+
+* build the development image on current Debian ([#39](https://github.com/mschoenlaub/semian-postgres/issues/39)) ([2fb1a3b](https://github.com/mschoenlaub/semian-postgres/commit/2fb1a3b7c637ce759de7a3d7117e5647311265dd))
+
 ## [0.2.1](https://github.com/mschoenlaub/semian-postgres/compare/v0.2.0...v0.2.1) (2025-10-23)
 
 
