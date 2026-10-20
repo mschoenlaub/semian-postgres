@@ -7,9 +7,14 @@ require 'pg'
 # We need to patch the actual pg gem to decorate the base errors such as PG::Error
 module PG
   ::PG::Error.include(Semian::AdapterError)
+  # A statement timeout is the server giving up on a slow query, which is the
+  # closest thing PostgreSQL has to a client-side read timeout. Any other
+  # cancellation (pg_cancel_backend, PG::Connection#cancel) is a deliberate
+  # decision by an operator or the application and says nothing about the
+  # health of the server, so it must not open the circuit.
   ::PG::QueryCanceled.class_eval do
     def marks_semian_circuits?
-      message !~ /canceling statement due to statement timeout/
+      message.include?('canceling statement due to statement timeout')
     end
   end
 

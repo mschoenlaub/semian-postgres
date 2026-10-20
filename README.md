@@ -53,6 +53,25 @@ conn.exec("SELECT 1")
 ```
 
 
+## Which errors open the circuit
+
+Semian protects against slow or unreachable resources, so only two kinds of errors count
+as failures for the circuit breaker:
+
+- `PG::ConnectionBad`: the server cannot be reached, or the connection was lost.
+- `PG::QueryCanceled` caused by `statement_timeout`: the server gave up on a query that ran
+  longer than the configured limit. libpq has no client-side read timeout, so this is the
+  PostgreSQL equivalent of the `read_timeout` the Semian MySQL adapters use as a slow-query signal.
+
+Any other error, including syntax errors and queries cancelled by `pg_cancel_backend` or
+`PG::Connection#cancel`, is raised as usual but does not affect the circuit. A cancelled query
+is an operator or application decision, not a measurement of the server's health.
+
+The two causes of `PG::QueryCanceled` share the same SQLSTATE, so they are told apart by the
+server's error message. This requires the server to send English messages
+(`lc_messages = 'C'` or an English locale). With a different locale, statement timeouts are
+not recognised and no longer open the circuit.
+
 ## Development
 Semian, and by extension semian-postgres, currently depends on Linux for **Bulkheading**.
 
