@@ -53,6 +53,25 @@ module Semian
       def retrieve_semian_configuration(host, port)
         @semian_configuration.call(host, port) if @semian_configuration.respond_to?(:call)
       end
+
+      def semian_identifier_for(iopts, options)
+        return "pg_#{options[:name]}" if options && options[:name]
+
+        "pg_#{iopts[:host]}:#{iopts[:port]}"
+      end
+
+      def ensure_circuit_allows_connect!(iopts)
+        options = retrieve_semian_configuration(iopts[:host], iopts[:port])
+        return if options.nil?
+
+        identifier = semian_identifier_for(iopts, options)
+        circuit_breaker = Semian[identifier]&.circuit_breaker
+        return if circuit_breaker.nil? || circuit_breaker.request_allowed?
+
+        last_error = circuit_breaker.last_error
+        message = "connection attempt skipped, circuit is open, caused by #{last_error&.message}"
+        raise CircuitOpenError.new(identifier, message), cause: last_error
+      end
     end
 
     def conninfo_hash
@@ -62,8 +81,7 @@ module Semian
     end
 
     def semian_identifier
-      @semian_identifier ||= "pg_#{raw_semian_options[:name]}" if raw_semian_options && raw_semian_options[:name]
-      @semian_identifier ||= "pg_#{@iopts[:host]}:#{@iopts[:port]}"
+      @semian_identifier ||= Semian::PG.semian_identifier_for(@iopts, raw_semian_options)
     end
 
     def raw_semian_options
@@ -126,8 +144,10 @@ module Semian
     # The pg gem defines some necessary methods on class level, which is why we have to hook into them.
     module ClassMethods
       def connect_start(*)
+        iopts = _iopts(*)
+        Semian::PG.ensure_circuit_allows_connect!(iopts)
         conn = super
-        conn.instance_variable_set(:@iopts, _iopts(*))
+        conn.instance_variable_set(:@iopts, iopts)
         conn
       end
 
