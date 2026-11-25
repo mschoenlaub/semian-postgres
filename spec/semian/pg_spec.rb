@@ -3,6 +3,7 @@
 require 'pg'
 require 'semian'
 require 'semian/pg'
+require 'socket'
 require 'toxiproxy'
 
 RSpec.describe PG do
@@ -52,6 +53,51 @@ RSpec.describe PG do
 
         expect(conn.conninfo_hash).to include(connect_timeout: '3')
       end
+    end
+  end
+
+  describe 'connecting while the circuit is open' do
+    let(:server) { TCPServer.new('127.0.0.1', 0) }
+    let(:accepted) { Queue.new }
+    let(:connect) do
+      proc { PG::Connection.connect(host: '127.0.0.1', port: server.addr[1], connect_timeout: 1, sslmode: 'disable') }
+    end
+
+    # Accepts the TCP connection and never answers, like an overloaded server.
+    let!(:acceptor) do
+      Thread.new do
+        sockets = []
+        loop do
+          sockets << server.accept
+          accepted << 1
+        end
+      end
+    end
+
+    after do
+      acceptor.kill
+      server.close
+    end
+
+    it 'does not open a socket to the server' do
+      expect { connect.call }.to raise_error(PG::ConnectionBad)
+      expect(accepted.size).to eq(1)
+
+      3.times { expect { connect.call }.to raise_error(PG::CircuitOpenError) }
+      sleep 0.1
+
+      expect(accepted.size).to eq(1)
+    end
+
+    it 'lets a connection attempt through once the error timeout has expired' do
+      expect { connect.call }.to raise_error(PG::ConnectionBad)
+      expect { connect.call }.to raise_error(PG::CircuitOpenError)
+
+      time_travel(5 + 1) do
+        expect { connect.call }.to raise_error(PG::ConnectionBad)
+      end
+
+      expect(accepted.size).to eq(2)
     end
   end
 
